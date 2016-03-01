@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PluginDescriptor>
+	<JavaPlugin>
+		<interfaceClass>org.bimserver.plugins.serializers.SerializerPlugin</interfaceClass>
+		<implementationClass>org.bimserver.cesium.BoundingBoxesJsonSerializerPlugin</implementationClass>
+		<description>JSON serializer with bounding boxes of queried objects</description>
+		<name>Cesium Bounding Boxes</name>
+	</JavaPlugin>
+</PluginDescriptor>
