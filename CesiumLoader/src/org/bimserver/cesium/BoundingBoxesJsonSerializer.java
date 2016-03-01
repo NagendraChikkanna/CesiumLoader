@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bimserver.BimserverDatabaseException;
 import org.bimserver.emf.PackageMetaData;
+import org.bimserver.geometry.Matrix;
 import org.bimserver.models.store.IfcHeader;
 import org.bimserver.plugins.PluginManagerInterface;
 import org.bimserver.plugins.serializers.ObjectProvider;
@@ -35,7 +39,6 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 	public void init(ObjectProvider objectProvider, ProjectInfo projectInfo, IfcHeader ifcHeader, PluginManagerInterface pluginManager, PackageMetaData packageMetaData) throws SerializerException {
 		this.objectProvider = objectProvider;
 		this.packageMetaData = packageMetaData;
-		
 	}
 
 	@Override
@@ -54,6 +57,14 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		ArrayNode result = objectMapper.createArrayNode();
+		double lowestX = Double.MAX_VALUE;
+		double lowestY = Double.MAX_VALUE;
+		double lowestZ = Double.MAX_VALUE;
+
+		double highestX = -Double.MAX_VALUE;
+		double highestY = -Double.MAX_VALUE;
+		double highestZ = -Double.MAX_VALUE;
+		
 		for (long spaceOid : spaces.keySet()) {
 			HashMapVirtualObject space = spaces.get(spaceOid);
 			Object geometryInfoLink = space.get("geometry");
@@ -75,11 +86,67 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 					Double maxY = (Double) maxBounds.eGet("y");
 					Double maxZ = (Double) maxBounds.eGet("z");
 					
+					if (minX < lowestX) {
+						lowestX = minX;
+					}
+					if (minY < lowestY) {
+						lowestY = minY;
+					}
+					if (minZ < lowestZ) {
+						lowestZ = minZ;
+					}
+					if (maxX > highestX) {
+						highestX = maxX;
+					}
+					if (maxY > highestY) {
+						highestY = maxY;
+					}
+					if (maxZ > highestZ) {
+						highestZ = maxZ;
+					}
+				}
+			}
+		}
+		
+		double xChange = (highestX - lowestX) / 2.0 + lowestX;
+		double yChange = (highestY - lowestY) / 2.0 + lowestY;
+		double zChange = (highestZ - lowestZ) / 2.0 + lowestZ;
+		
+		for (long spaceOid : spaces.keySet()) {
+			HashMapVirtualObject space = spaces.get(spaceOid);
+			Object geometryInfoLink = space.get("geometry");
+			if (geometryInfoLink != null) {
+				long geometryInfoOid = (long) geometryInfoLink;
+				HashMapVirtualObject geometryInfo = geometryInfos.get(geometryInfoOid);
+				if (geometryInfo != null) {
+//					byte[] transformation = (byte[]) geometryInfo.eGet(geometryInfo.eClass().getEStructuralFeature("transformation"));
+//					ByteBuffer bb = ByteBuffer.wrap(transformation);
+//					bb.order(ByteOrder.LITTLE_ENDIAN);
+//					DoubleBuffer buffer = bb.asDoubleBuffer();
+//					double[] matrix = new double[16];
+//					for (int i=0; i<16; i++) {
+//						matrix[i] = buffer.get();
+//					}
+					
+					ObjectNode objectNode = objectMapper.createObjectNode();
+					objectNode.put("guid", (String)space.get("GlobalId"));
+					objectNode.put("name", (String)space.get("Name"));
+					objectNode.put("oid", space.getOid());
+
+					HashMapWrappedVirtualObject minBounds = (HashMapWrappedVirtualObject) geometryInfo.eGet(geometryInfo.eClass().getEStructuralFeature("minBounds"));
+					HashMapWrappedVirtualObject maxBounds = (HashMapWrappedVirtualObject) geometryInfo.eGet(geometryInfo.eClass().getEStructuralFeature("maxBounds"));
+					Double minX = (Double) minBounds.eGet("x") - xChange;
+					Double minY = (Double) minBounds.eGet("y") - yChange;
+					Double minZ = (Double) minBounds.eGet("z") - zChange;
+					Double maxX = (Double) maxBounds.eGet("x") - xChange;
+					Double maxY = (Double) maxBounds.eGet("y") - yChange;
+					Double maxZ = (Double) maxBounds.eGet("z") - zChange;
+
 					ObjectNode min = objectMapper.createObjectNode();
 					min.put("x", minX);
 					min.put("y", minY);
 					min.put("z", minZ);
-					
+
 					ObjectNode max = objectMapper.createObjectNode();
 					max.put("x", maxX);
 					max.put("y", maxY);

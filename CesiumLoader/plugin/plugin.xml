@@ -6,4 +6,9 @@
 		<description>JSON serializer with bounding boxes of queried objects</description>
 		<name>Cesium Bounding Boxes</name>
 	</JavaPlugin>
+	<WebModulePlugin>
+		<identifier>cesiumloader</identifier>
+		<name>Cesium Loader</name>
+		<description>Cesium Loader</description>
+	</WebModulePlugin>
 </PluginDescriptor>
