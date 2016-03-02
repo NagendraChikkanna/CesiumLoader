@@ -19,49 +19,48 @@ function loadScript(url, callback)
 
 var scene = viewer.scene;
 
-var delft = Cesium.Cartesian3.fromDegrees(4.474182, 51.918438, 200);
+var delft = Cesium.Cartesian3.fromDegrees(4.474182, 51.918438, 10);
 var camera = viewer.camera;
 
 viewer.camera.flyTo({
     destination : delft
 });
 
-	var aabb = Cesium.AxisAlignedBoundingBox.fromPoints(Cesium.Cartesian3.fromDegreesArray([
-     -72.0, 40.0,
-     -70.0, 35.0,
-     -75.0, 30.0,
-     -70.0, 30.0,
-     -68.0, 40.0
-]));
-var box = Cesium.BoxOutlineGeometry.fromAxisAlignedBoundingBox(aabb);
-
-var lastPos = null;
+var unitConvert = 1;
 
 loadScript("http://localhost:8080/cesiumloader/js/cesiumloader.js", function () {
     var loader = new BimServerCesiumLoader();
     loader.init("http://localhost:8080", "admin@bimserver.org", "admin", function(){
-        var roid = 65539;
+//        var roid = 65539;
+        var roid = 131075;
         loader.loadTypes(roid, "IfcSpace", function(boundingBox){
             var min = boundingBox.min;
             var max = boundingBox.max;
-            
-            console.log(min);
-            
-            var pos = new Cesium.Cartesian3(min.x / 1000, min.y / 1000, min.z / 1000);
-            var d = new Cesium.Cartesian3(0, 0, 0);
-            Cesium.Cartesian3.add(delft, pos, d);
-            
-            lastPos = pos;
-            
-            var blueBox = viewer.entities.add({
-                name : 'Blue box',
-                position: d,
-                box : {
-                    dimensions : new Cesium.Cartesian3((max.x - min.x) / 1000, (max.y - min.y) / 1000, (max.z - min.z) / 1000),
-                    material : Cesium.Color.BLUE
-                }
+
+            var m = Cesium.Matrix4.multiplyByTranslation(
+                Cesium.Transforms.eastNorthUpToFixedFrame(delft), 
+                new Cesium.Cartesian3(min.x / unitConvert, min.y / unitConvert, min.z / unitConvert), 
+                new Cesium.Matrix4());
+
+                var geometry = Cesium.BoxGeometry.fromDimensions({
+              vertexFormat : Cesium.VertexFormat.POSITION_AND_NORMAL,
+              dimensions : new Cesium.Cartesian3((max.x - min.x) / unitConvert, (max.y - min.y) / unitConvert, (max.z - min.z) / unitConvert)
             });
-            
+            var instance = new Cesium.GeometryInstance({
+              geometry : geometry,
+              modelMatrix : m,
+              attributes : {
+                color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLUE)
+              },
+              id : boundingBox.guid
+            });
+
+            scene.primitives.add(new Cesium.Primitive({
+              geometryInstances : instance,
+              appearance : new Cesium.EllipsoidSurfaceAppearance({
+                material : Cesium.Material.fromType('Checkerboard')
+              })
+            }));   
         });
     });
 });

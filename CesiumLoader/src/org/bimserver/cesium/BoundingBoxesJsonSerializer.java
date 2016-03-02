@@ -72,11 +72,6 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 				long geometryInfoOid = (long) geometryInfoLink;
 				HashMapVirtualObject geometryInfo = geometryInfos.get(geometryInfoOid);
 				if (geometryInfo != null) {
-					ObjectNode objectNode = objectMapper.createObjectNode();
-					objectNode.put("guid", (String)space.get("GlobalId"));
-					objectNode.put("name", (String)space.get("Name"));
-					objectNode.put("oid", space.getOid());
-
 					HashMapWrappedVirtualObject minBounds = (HashMapWrappedVirtualObject) geometryInfo.eGet(geometryInfo.eClass().getEStructuralFeature("minBounds"));
 					HashMapWrappedVirtualObject maxBounds = (HashMapWrappedVirtualObject) geometryInfo.eGet(geometryInfo.eClass().getEStructuralFeature("maxBounds"));
 					Double minX = (Double) minBounds.eGet("x");
