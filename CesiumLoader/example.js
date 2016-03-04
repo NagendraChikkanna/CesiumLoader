@@ -21,9 +21,13 @@ viewer.camera.flyTo({
     destination : location
 });
 
-loadScript("https://thisisanexperimentalserver.com/apps/cesiumloader/js/cesiumloader.js", function () {
+var address = "";
+var username = "";
+var password = "";
+
+loadScript(address + "/apps/cesiumloader/js/cesiumloader.js", function () {
     var loader = new BimServerCesiumLoader();
-    loader.init("https://thisisanexperimentalserver.com", "ruben@logic-labs.nl", "blaat", function(){
+    loader.init(address, username, password, function(){
         var roids = [131075, 262147, 393219, 655363, 524291];
         roids.forEach(function(roid){
             loader.loadTypes(roid, "IfcSpace", function(boundingBox){
