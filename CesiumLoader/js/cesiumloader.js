@@ -90,7 +90,50 @@ function BimServerCesiumLoader() {
 		};
 		xhr.send();
 	};
+
+	this.loadGltf = function(roid, callback){
+		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.gltf.BinaryGltfSerializerPlugin", function(serializer){
+			o.bimServerApi.call("Bimsie1ServiceInterface", "download", {
+				roid: roid,
+				showOwn: true,
+				serializerOid: serializer.oid,
+				sync: false
+			}, function(topicId){
+				o.bimServerApi.registerProgressHandler(topicId, function(topicId, state){
+					if (state.title == "Done preparing") {
+						var url = o.bimServerApi.generateRevisionDownloadUrl({serializerOid: serializer.oid, topicId: topicId});
+						console.log(url);
+						callback(url);
+					}
+				});
+			});
+		});		
+	}
 	
+	this.loadGltfTypes = function(roid, type, callback){
+		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.gltf.BinaryGltfSerializerPlugin", function(serializer){
+			o.bimServerApi.call("Bimsie1ServiceInterface", "downloadByTypes", {
+				roids: [roid],
+				schema: "ifc2x3tc1",
+				classNames: [type],
+				includeAllSubtypes: true,
+				useObjectIDM: false,
+				deep: false,
+				serializerOid: serializer.oid,
+				sync: false
+			}, function(topicId){
+				o.bimServerApi.registerProgressHandler(topicId, function(topicId, state){
+					console.log(state);
+					if (state.title == "Done preparing") {
+						var url = o.bimServerApi.generateRevisionDownloadUrl({serializerOid: serializer.oid, topicId: topicId});
+						console.log(url);
+						callback(url);
+					}
+				});
+			});
+		});		
+	};
+
 	this.loadTypes = function(roid, type, callback){
 		var query = {
 			type: type,
