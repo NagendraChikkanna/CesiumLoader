@@ -21,7 +21,7 @@ function BimServerCesiumLoader() {
 		    		callback();
 		    	}
 		    };
-		    
+		     
 //		    script.onreadystatechange = cb;
 		    script.onload = cb;
 
@@ -91,11 +91,11 @@ function BimServerCesiumLoader() {
 		xhr.send();
 	};
 
-	this.loadGltf = function(roid, callback){
+	this.loadGltf = function(roid, query, callback){
 		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.gltf.BinaryGltfSerializerPlugin", function(serializer){
-			o.bimServerApi.call("Bimsie1ServiceInterface", "download", {
-				roid: roid,
-				showOwn: true,
+			o.bimServerApi.call("ServiceInterface", "downloadByNewJsonQuery", {
+				roids: [roid],
+				query: JSON.stringify(query),
 				serializerOid: serializer.oid,
 				sync: false
 			}, function(topicId){
@@ -112,7 +112,7 @@ function BimServerCesiumLoader() {
 	
 	this.loadGltfTypes = function(roid, type, callback){
 		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.gltf.BinaryGltfSerializerPlugin", function(serializer){
-			o.bimServerApi.call("Bimsie1ServiceInterface", "downloadByTypes", {
+			o.bimServerApi.call("ServiceInterface", "downloadByTypes", {
 				roids: [roid],
 				schema: "ifc2x3tc1",
 				classNames: [type],
@@ -148,7 +148,7 @@ function BimServerCesiumLoader() {
 		};
 		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.cesium.BoundingBoxesJsonSerializerPlugin", function(serializer){
 			console.log(serializer);
-			o.bimServerApi.call("Bimsie1ServiceInterface", "downloadByNewJsonQuery", {
+			o.bimServerApi.call("ServiceInterface", "downloadByNewJsonQuery", {
 				roids: [roid],
 				query: JSON.stringify(query),
 				serializerOid: serializer.oid,
