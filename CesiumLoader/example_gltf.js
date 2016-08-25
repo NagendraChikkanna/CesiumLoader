@@ -14,7 +14,7 @@ function loadScript(url, callback) {
 
 var scene = viewer.scene;
 
-var location = Cesium.Cartesian3.fromDegrees(4.474182, 51.918438, 0); // Rotterdam
+var location = Cesium.Cartesian3.fromDegrees(4.7975137,52.4917538, 0);
 var camera = viewer.camera;
 
 var address = "http://localhost:8080";
@@ -24,7 +24,7 @@ var password = "admin";
 loadScript(address + "/apps/cesiumloader/js/cesiumloader.js", function () {
     var loader = new BimServerCesiumLoader();
     loader.init(address, username, password, function(){
-        var roid = 720899;
+        var roid = 65539;
         var query = {
           type: "IfcProduct",
           includeAllSubtypes: true,

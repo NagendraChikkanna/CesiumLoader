@@ -13,7 +13,7 @@ function BimServerCesiumLoader() {
 
 		    // Then bind the event to the callback function.
 		    // There are several events for cross browser compatibility.
-		    
+		     
 		    var cb = function(){
 		    	console.log("loaded", url);
 		    	toload--;
@@ -123,11 +123,10 @@ function BimServerCesiumLoader() {
 				sync: false
 			}, function(topicId){
 				o.bimServerApi.registerProgressHandler(topicId, function(topicId, state){
-					console.log(state);
 					if (state.title == "Done preparing") {
 						var url = o.bimServerApi.generateRevisionDownloadUrl({serializerOid: serializer.oid, topicId: topicId});
-						console.log(url);
 						callback(url);
+						//o.bimServerApi.call("ServiceInterface", "cleanupLongAction", {topicId: topicId}, function(){});
 					}
 				});
 			});
