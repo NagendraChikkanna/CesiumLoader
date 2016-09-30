@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.DoubleBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bimserver.BimserverDatabaseException;
 import org.bimserver.emf.PackageMetaData;
-import org.bimserver.geometry.Matrix;
 import org.bimserver.models.store.IfcHeader;
 import org.bimserver.plugins.PluginManagerInterface;
 import org.bimserver.plugins.serializers.ObjectProvider;
