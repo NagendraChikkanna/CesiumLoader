@@ -40,11 +40,25 @@ function BimServerCesiumLoader() {
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/ifc4.js",
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/model.js",
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/translations_en.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverclient.js"
+		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverclient.js" 
 		];
 		loadScripts(scripts, function () {
 			console.log("creating client");
-			o.bimServerApi = new BimServerClient(bimServerAddress, null);
+			
+			var notifier = {
+				setInfo: function(message, timeout){
+					console.log("[default]", message);
+				},
+				setSuccess: function(message, timeout){},
+				setError: function(error){
+					console.error(error);
+				},
+				resetStatus: function(){},
+				resetStatusQuick: function(){},
+				clear: function(){}
+			};
+			
+			o.bimServerApi = new BimServerClient(bimServerAddress, notifier);
 			console.log("initializing client");
 			o.bimServerApi.init(function(api, serverInfo){
 				console.log(serverInfo);

@@ -31,4 +31,9 @@ public class BoundingBoxesJsonSerializerPlugin implements StreamingSerializerPlu
 	public Set<Schema> getSupportedSchemas() {
 		return Collections.singleton(Schema.IFC2X3TC1);
 	}
+
+	@Override
+	public String getOutputFormat(Schema schema) {
+		return null;
+	}
 }
