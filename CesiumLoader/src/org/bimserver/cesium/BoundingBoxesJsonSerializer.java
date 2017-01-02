@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class BoundingBoxesJsonSerializer implements StreamingSerializer, StreamingReader {
-
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 	private ObjectProvider objectProvider;
 	private PackageMetaData packageMetaData;
 
@@ -51,8 +51,7 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 			next = objectProvider.next();
 		}
 		
-		ObjectMapper objectMapper = new ObjectMapper();
-		ArrayNode result = objectMapper.createArrayNode();
+		ArrayNode result = OBJECT_MAPPER.createArrayNode();
 		double lowestX = Double.MAX_VALUE;
 		double lowestY = Double.MAX_VALUE;
 		double lowestZ = Double.MAX_VALUE;
@@ -119,7 +118,7 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 //						matrix[i] = buffer.get();
 //					}
 					
-					ObjectNode objectNode = objectMapper.createObjectNode();
+					ObjectNode objectNode = OBJECT_MAPPER.createObjectNode();
 					objectNode.put("guid", (String)space.get("GlobalId"));
 					objectNode.put("name", (String)space.get("Name"));
 					objectNode.put("oid", space.getOid());
@@ -133,12 +132,12 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 					Double maxY = (Double) maxBounds.eGet("y") - yChange;
 					Double maxZ = (Double) maxBounds.eGet("z") - zChange;
 
-					ObjectNode min = objectMapper.createObjectNode();
+					ObjectNode min = OBJECT_MAPPER.createObjectNode();
 					min.put("x", minX);
 					min.put("y", minY);
 					min.put("z", minZ);
 
-					ObjectNode max = objectMapper.createObjectNode();
+					ObjectNode max = OBJECT_MAPPER.createObjectNode();
 					max.put("x", maxX);
 					max.put("y", maxY);
 					max.put("z", maxZ);
@@ -150,7 +149,7 @@ public class BoundingBoxesJsonSerializer implements StreamingSerializer, Streami
 			}
 		}
 		try {
-			objectMapper.writeValue(new PrintWriter(outputStream), result);
+			OBJECT_MAPPER.writeValue(new PrintWriter(outputStream), result);
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

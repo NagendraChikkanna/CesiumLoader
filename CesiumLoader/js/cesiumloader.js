@@ -36,6 +36,7 @@ function BimServerCesiumLoader() {
 		var scripts = [
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverapiwebsocket.js",
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverapipromise.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/js/geometry.js",
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/ifc2x3tc1.js",
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/ifc4.js",
 		    bimServerAddress + "/apps/bimserverjavascriptapi/js/model.js",
@@ -107,7 +108,7 @@ function BimServerCesiumLoader() {
 
 	this.loadGltf = function(roid, query, callback){
 		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.gltf.BinaryGltfSerializerPlugin", function(serializer){
-			o.bimServerApi.call("ServiceInterface", "downloadByNewJsonQuery", {
+			o.bimServerApi.call("ServiceInterface", "download", {
 				roids: [roid],
 				query: JSON.stringify(query),
 				serializerOid: serializer.oid,
@@ -126,13 +127,9 @@ function BimServerCesiumLoader() {
 	
 	this.loadGltfTypes = function(roid, type, callback){
 		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.gltf.BinaryGltfSerializerPlugin", function(serializer){
-			o.bimServerApi.call("ServiceInterface", "downloadByTypes", {
+			o.bimServerApi.call("ServiceInterface", "download", {
 				roids: [roid],
 				schema: "ifc2x3tc1",
-				classNames: [type],
-				includeAllSubtypes: true,
-				useObjectIDM: false,
-				deep: false,
 				serializerOid: serializer.oid,
 				sync: false
 			}, function(topicId){
@@ -161,7 +158,7 @@ function BimServerCesiumLoader() {
 		};
 		o.bimServerApi.getSerializerByPluginClassName("org.bimserver.cesium.BoundingBoxesJsonSerializerPlugin", function(serializer){
 			console.log(serializer);
-			o.bimServerApi.call("ServiceInterface", "downloadByNewJsonQuery", {
+			o.bimServerApi.call("ServiceInterface", "download", {
 				roids: [roid],
 				query: JSON.stringify(query),
 				serializerOid: serializer.oid,

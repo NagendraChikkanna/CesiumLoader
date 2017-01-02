@@ -14,7 +14,7 @@ function loadScript(url, callback) {
 
 var scene = viewer.scene;
 
-var location = Cesium.Cartesian3.fromDegrees(4.7975137,52.4917538, 0);
+var position = Cesium.Cartesian3.fromDegrees(4.4888735, 51.9066471, 150);
 var camera = viewer.camera;
 
 var address = "http://localhost:8080";
@@ -24,7 +24,7 @@ var password = "admin";
 loadScript(address + "/apps/cesiumloader/js/cesiumloader.js", function () {
     var loader = new BimServerCesiumLoader();
     loader.init(address, username, password, function(){
-        var roid = 65539;
+        var roid = 327683;
         var query = {
           type: "IfcProduct",
           includeAllSubtypes: true,
@@ -37,9 +37,14 @@ loadScript(address + "/apps/cesiumloader/js/cesiumloader.js", function () {
           }
         }
      };
+    var heading = Cesium.Math.toRadians(143);
+    var hpr = new Cesium.HeadingPitchRoll(heading, 0, 0);
+    var orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+        
      loader.loadGltf(roid, query, function(url){
             var entity = viewer.entities.add({
-                position : location,
+                position : position,
+                orientation : orientation,
                 model : {
                     uri : url,
                     scale: 0.001
