@@ -34,14 +34,14 @@ function BimServerCesiumLoader() {
 		console.log("loading script");
 		
 		var scripts = [
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverapiwebsocket.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverapipromise.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/geometry.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/ifc2x3tc1.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/ifc4.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/model.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/translations_en.js",
-		    bimServerAddress + "/apps/bimserverjavascriptapi/js/bimserverclient.js" 
+		    bimServerAddress + "/apps/bimserverjavascriptapi/bimserverapiwebsocket.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/bimserverapipromise.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/geometry.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/ifc2x3tc1.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/ifc4.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/model.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/translations_en.js",
+		    bimServerAddress + "/apps/bimserverjavascriptapi/bimserverclient.js" 
 		];
 		loadScripts(scripts, function () {
 			console.log("creating client");
